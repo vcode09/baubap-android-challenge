@@ -1,0 +1,22 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - development
+      - staging
+      - main
+    types: [opened, synchronize]
+
+jobs:
+  ci:
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: continuous-integration
+
+    steps:
+      - name: Do Nothing
+        run: echo "This GitHub Action does nothing but run and pass the validation XD."
