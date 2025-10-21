@@ -20,8 +20,14 @@ android {
 
     buildTypes {
         debug {
+            isMinifyEnabled = false
+        }
+        release {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -50,6 +56,7 @@ dependencies {
     implementation(libs.orbit.viewmodel)
     implementation(libs.orbit.mvi)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
 
     // Networking
     implementation(libs.retrofit)

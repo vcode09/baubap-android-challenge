@@ -136,6 +136,14 @@ fun RegisterScreen(
             }
         }
 
+        if (state.errorMessage != null) {
+            AuthErrorCard(
+                errorMessage = state.errorMessage,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+        }
+
         TextButton(
             onClick = onNavigateToLogin,
             enabled = !state.isLoading

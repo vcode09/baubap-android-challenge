@@ -1,7 +1,7 @@
 package com.baubap.challenge
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +21,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +42,9 @@ fun LoginScreen(
     onNavigateToHome: () -> Unit,
     viewModel: AuthViewModel = viewModel()
 ) {
-    var email = ""
-    var password = ""
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+
 
     val state by viewModel.collectAsState()
 
@@ -106,6 +107,13 @@ fun LoginScreen(
             enabled = !state.isLoading
         )
 
+        if (state.errorMessage != null) {
+            AuthErrorCard(
+                errorMessage = state.errorMessage,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
+
         Button(
             onClick = {
                 viewModel.login(email, password)
@@ -144,5 +152,33 @@ fun LoginScreenPreview() {
             onNavigateToRegister = {},
             onNavigateToHome = {},
         )
+    }
+}
+
+@Composable
+fun AuthErrorCard(
+    errorMessage: String?,
+    modifier: Modifier = Modifier
+) {
+    if (errorMessage != null) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        }
     }
 }
