@@ -1,4 +1,4 @@
-package com.baubap.challenge
+package com.baubap.challenge.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,31 +27,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import org.orbitmvi.orbit.compose.collectAsState
-import org.orbitmvi.orbit.compose.collectSideEffect
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.baubap.challenge.presentation.NewAuthViewModel
 
 @Composable
 fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToHome: () -> Unit,
-    viewModel: AuthViewModel = viewModel()
+    viewModel: NewAuthViewModel = hiltViewModel()
 ) {
     var email by remember { mutableStateOf("eve.holt@reqres.in") }
     var password by remember { mutableStateOf("pistol") }
     var confirmPassword by remember { mutableStateOf("pistol") }
-    var showErrorSnackbar by remember { mutableStateOf(false) }
 
-    val state by viewModel.collectAsState()
+    val state by viewModel.state.collectAsState()
 
-    viewModel.collectSideEffect { sideEffect ->
-        when (sideEffect) {
-            is AuthSideEffect.NavigateToHome -> {
-                onNavigateToHome()
-            }
-
-            is AuthSideEffect.ShowError -> {
-                showErrorSnackbar = true
+    LaunchedEffect(Unit) {
+        viewModel.clearError()
+        viewModel.events.collect { event ->
+            when (event) {
+                is NewAuthViewModel.Event.NavigateToHome -> onNavigateToHome()
+                is NewAuthViewModel.Event.ShowMessage -> { /* snackbar */ }
+                is NewAuthViewModel.Event.NavigateToLogin -> onNavigateToLogin()
             }
         }
     }

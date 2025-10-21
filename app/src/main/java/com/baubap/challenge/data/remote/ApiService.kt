@@ -1,9 +1,12 @@
-package com.baubap.challenge
+package com.baubap.challenge.data.remote
 
+import com.baubap.challenge.data.dto.LoginRequest
+import com.baubap.challenge.data.dto.LoginResponse
+import com.baubap.challenge.data.dto.RegisterRequest
+import com.baubap.challenge.data.dto.RegisterResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.GET
 
 interface ApiService {
     @POST("api/register")

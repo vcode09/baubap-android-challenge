@@ -1,4 +1,7 @@
 pluginManagement {
+    plugins {
+        id("com.google.dagger.hilt.android") version "2.57.2"
+    }
     repositories {
         google {
             content {

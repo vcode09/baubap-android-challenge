@@ -1,11 +1,22 @@
-package com.baubap.challenge
+package com.baubap.challenge.data.remote
 
+import com.baubap.challenge.data.remote.ApiService
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 object ApiClient {
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+        explicitNulls = false
+        encodeDefaults = true
+    }
+
     private const val BASE_URL = "https://reqres.in/"
+    private val contentType = "application/json".toMediaType()
 
     val httpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
@@ -20,7 +31,7 @@ object ApiClient {
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(httpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(json.asConverterFactory(contentType))
         .build()
 
     val apiService: ApiService = retrofit.create(ApiService::class.java)

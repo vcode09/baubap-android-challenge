@@ -7,14 +7,14 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.baubap.challenge.AuthViewModel
-import com.baubap.challenge.HomeScreen
-import com.baubap.challenge.LoginScreen
-import com.baubap.challenge.RegisterScreen
+import com.baubap.challenge.presentation.NewAuthViewModel
+import com.baubap.challenge.ui.HomeScreen
+import com.baubap.challenge.ui.LoginScreen
+import com.baubap.challenge.ui.RegisterScreen
 
 
 private const val DURATION = 280
@@ -29,7 +29,7 @@ object Routes {
 @Composable
 fun AuthApp(
     modifier: Modifier = Modifier,
-    authViewModel: AuthViewModel = viewModel()
+    authViewModel: NewAuthViewModel = hiltViewModel()
 ) {
     val nav = rememberNavController()
 
@@ -41,7 +41,6 @@ fun AuthApp(
         // LOGIN
         composable(
             route = Routes.Login,
-            // primer screen: sin animación de entrada
             enterTransition = { fadeIn(animationSpec = tween(0)) },
             exitTransition = {
                 when (targetState.destination.route) {
@@ -61,7 +60,6 @@ fun AuthApp(
                 }
             },
             popEnterTransition = {
-                // volver desde Register → Login
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Right,
                     animationSpec = tween(DURATION)
@@ -85,7 +83,6 @@ fun AuthApp(
         composable(
             route = Routes.Register,
             enterTransition = {
-                // push desde Login → Register
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(DURATION)
@@ -94,14 +91,12 @@ fun AuthApp(
             exitTransition = {
                 when (targetState.destination.route) {
                     Routes.Login ->
-                        // back a Login
                         slideOutOfContainer(
                             AnimatedContentTransitionScope.SlideDirection.Right,
                             animationSpec = tween(DURATION)
                         ) + fadeOut(tween(DURATION))
 
                     Routes.Home ->
-                        // push a Home
                         slideOutOfContainer(
                             AnimatedContentTransitionScope.SlideDirection.Left,
                             animationSpec = tween(DURATION)
@@ -139,7 +134,6 @@ fun AuthApp(
         composable(
             route = Routes.Home,
             enterTransition = {
-                // desde Login o Register → Home
                 slideIntoContainer(
                     AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(DURATION)

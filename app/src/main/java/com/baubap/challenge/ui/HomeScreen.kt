@@ -1,4 +1,4 @@
-package com.baubap.challenge
+package com.baubap.challenge.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,17 +8,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.orbitmvi.orbit.compose.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.baubap.challenge.presentation.NewAuthViewModel
 
 @Composable
 fun HomeScreen(
     onLogout: () -> Unit,
-    viewModel: AuthViewModel = viewModel()
+    viewModel: NewAuthViewModel = hiltViewModel()
 ) {
-    val state by viewModel.collectAsState()
-
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            if (event is NewAuthViewModel.Event.NavigateToLogin) onLogout()
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -35,7 +38,7 @@ fun HomeScreen(
 
         state.user?.let { user ->
             Card(
-                modifier = Modifier
+            modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 32.dp)
             ) {
